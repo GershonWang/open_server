@@ -68,8 +68,7 @@ public class MainController implements Initializable {
                 String port = entity.getPort();
                 if (port != null && !"".equals(port)) {
                     try {
-                        // 根据端口号查看进程是否存在
-                        Process process = Runtime.getRuntime().exec("netstat -ano");
+                        Process process = Runtime.getRuntime().exec("netstat -ano"); // 根据端口号查看进程是否存在
                         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
                         String line;
                         Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+");
@@ -276,7 +275,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void addClick(ActionEvent actionEvent) {
+    public void addClick(ActionEvent actionEvent) throws IOException {
         System.out.println("点击了\"新增\"菜单 == " + actionEvent);
         Stage stage = new Stage();
         VBox box = new VBox();
@@ -284,7 +283,20 @@ public class MainController implements Initializable {
         ObservableList<Node> children = box.getChildren();
         GridPane textPane = new GridPane();
         TextArea area = new TextArea();
-        String content = "这里需要默认模板内容";
+        URL url = this.getClass().getClassLoader().getResource("template/application.properties");
+        BufferedInputStream bis = null;
+        if (url != null) {
+            bis = new BufferedInputStream(Files.newInputStream(Paths.get(url.getPath())));
+        }
+        StringBuilder sb = new StringBuilder();
+        int data;
+        if (bis != null) {
+            while ((data = bis.read()) != -1) {
+                sb.append((char) data);
+            }
+        }
+        String body = sb.toString();
+        String content = UnicodeBackslashU.unicodeToCn(body);
         area.setText(content);
         textPane.add(area,1,1);
         children.add(textPane);
