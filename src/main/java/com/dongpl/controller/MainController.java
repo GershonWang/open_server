@@ -171,7 +171,7 @@ public class MainController implements Initializable {
                         }
                     }
                 } else {
-                    String[] cdRoom = new String[] {"cmd","/C","cd /d " + parent + " && java -jar -Dspring.profiles.active=" + serverName + " emss-common-data-2.0.6.jar"};
+                    String[] cdRoom = new String[] {"cmd","/C","cd /d " + parent + " && java -jar -Dspring.profiles.active=" + serverName + " common-data-2.0.6.jar"};
                     Process process = Runtime.getRuntime().exec(cdRoom);
                     // 获取子进程的输入流和错误流
                     InputStream inputStream = process.getInputStream();
