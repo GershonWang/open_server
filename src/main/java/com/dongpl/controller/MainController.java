@@ -139,7 +139,7 @@ public class MainController implements Initializable {
                         if (matcher.find()) {
                             String partStr = matcher.group().split(":")[1];
                             if (Objects.equals(partStr, port)) {
-                                String pid = line.split("\\s")[5];
+                                String pid = line.split("\\s+")[5];
                                 if (!"0".equals(pid)) {
                                     //根据进程id杀死进程
                                     Process killProcess = Runtime.getRuntime().exec("taskkill /F /PID " + pid);
@@ -217,6 +217,23 @@ public class MainController implements Initializable {
                 System.out.println("当前执行linux系统的操作");
                 if (isOpen) {
                     System.out.println("执行关闭服务操作");
+                    Process process = Runtime.getRuntime().exec("lsof -i :" + port);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(line);
+                        if (line.contains("LISTEN")) {
+                            String[] parts = line.trim().split("\\s+");
+                            String pid = parts[1];
+                            Process killProcess = Runtime.getRuntime().exec("kill " + pid);
+                            killProcess.waitFor();
+                            System.out.println("Process " + pid + " has been killed");
+                            String cn = "\"" + serverName.toUpperCase() + "\"服务停止成功！！！";
+                            textArea.setText(cn);
+                            break;
+                        }
+                    }
+                    reader.close();
                     button.setStyle("-fx-background-color: green;");
                     entity.setOpen(false);
                 } else {
