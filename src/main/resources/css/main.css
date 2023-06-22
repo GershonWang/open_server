@@ -16,7 +16,7 @@
     -fx-font-weight: bold;
 }
 
-.menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+.menu-bar .menu-button:hover {
     -fx-background: -fx-accent;
     -fx-background-color: darkslategray;
     -fx-opacity: 0.5;
@@ -42,7 +42,20 @@
     -fx-opacity: 0.9;
 }
 
-#textArea {
+#flowPane {
+    /*-fx-background-color: #2c2a38;*/
+    -fx-background-color: darkslategray;
+    -fx-padding: 10;
+    -fx-vgap: 10;
+    -fx-hgap: 10;
+}
+
+#textPane {
+    -fx-background-color: greenyellow;
+    -fx-padding: 10 10 10 10;
+}
+
+#textPane #textArea {
     -fx-background-color: #2c2a38;
     /*-fx-text-fill: #ffffff*/
     -fx-text-fill: black;

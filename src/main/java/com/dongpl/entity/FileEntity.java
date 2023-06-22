@@ -17,6 +17,10 @@ public class FileEntity {
      */
     private String parentPath;
     /**
+     * 服务名称
+     */
+    private String serverName;
+    /**
      * 服务端口号
      */
     private String port;

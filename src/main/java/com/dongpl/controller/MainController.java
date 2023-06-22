@@ -1,58 +1,64 @@
 package com.dongpl.controller;
 
+import com.dongpl.Main;
 import com.dongpl.entity.FileEntity;
 import com.dongpl.utils.FileUtil;
+import com.dongpl.utils.RandomChinese;
 import com.dongpl.utils.UnicodeBackslashU;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import lombok.SneakyThrows;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainController implements Initializable {
 
     @FXML
-    public FlowPane pane;
+    public VBox box;
     @FXML
     public MenuBar menuBar;
     @FXML
-    public ButtonBar buttonBar;
+    public FlowPane flowPane;
     @FXML
-    public TextArea textArea;
-    public Menu fileMenu;
-    public Menu confMenu;
-    public Menu aboutMenu;
+    public GridPane textPane;
 
-    @SneakyThrows
+    public TextArea textArea;
+
+    public static String path = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "data";
+
     @Override
     public void initialize(URL location, ResourceBundle resource) {
-        menuBar.prefWidthProperty().bind(pane.widthProperty()); //菜单栏宽度绑定为pane宽度
-        buttonBar.prefWidthProperty().bind(pane.widthProperty()); //按钮栏宽度绑定为pane宽度
-        textArea.prefWidthProperty().bind(pane.widthProperty()); //文本域宽度绑定为pane宽度
-        setButtonBar(buttonBar);
+        menuBar.prefWidthProperty().bind(box.widthProperty()); //菜单栏宽度绑定为box宽度
+        flowPane.prefWidthProperty().bind(box.widthProperty()); //flowPane宽度绑定为box宽度
+        setFlowPane(flowPane);
+        VBox.setVgrow(textPane, Priority.ALWAYS); // 文本域布局部分自适应程序宽高
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea,Priority.ALWAYS);
     }
 
     /**
      * 设置服务按钮列表
      */
-    private void setButtonBar(ButtonBar buttonBar) throws IOException {
-        ObservableList<Node> buttons = buttonBar.getButtons();
-        String property = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "emss-data";
-        List<Map<String, FileEntity>> fileList = FileUtil.getFileList(property);
+    private void setFlowPane(FlowPane flowPane) {
+        ObservableList<Node> children = flowPane.getChildren();
+        children.clear(); // 清除所有的按钮组件
+        System.out.println("查询文件目录::" + path);
+        List<Map<String, FileEntity>> fileList = FileUtil.getFileList(path);
         for (Map<String,FileEntity> map : fileList) {
             for (String str : map.keySet()) {
                 FileEntity entity = map.get(str);
@@ -61,20 +67,24 @@ public class MainController implements Initializable {
                 entity.setOpen(false);
                 String port = entity.getPort();
                 if (port != null && !"".equals(port)) {
-                    // 根据端口号查看进程是否存在
-                    Process process = Runtime.getRuntime().exec("netstat -ano");
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
-                    String line;
-                    Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+");
-                    while ((line = reader.readLine()) != null) {
-                        Matcher matcher = pattern.matcher(line);
-                        if (matcher.find()) {
-                            String partStr = matcher.group().split(":")[1];
-                            if (Objects.equals(partStr,port)) {
-                                button.setStyle("-fx-background-color: red;");
-                                entity.setOpen(true);
+                    try {
+                        // 根据端口号查看进程是否存在
+                        Process process = Runtime.getRuntime().exec("netstat -ano");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
+                        String line;
+                        Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+");
+                        while ((line = reader.readLine()) != null) {
+                            Matcher matcher = pattern.matcher(line);
+                            if (matcher.find()) {
+                                String partStr = matcher.group().split(":")[1];
+                                if (Objects.equals(partStr,port)) {
+                                    button.setStyle("-fx-background-color: red;");
+                                    entity.setOpen(true);
+                                }
                             }
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
                 button.setOnMouseClicked(event -> {
@@ -85,7 +95,7 @@ public class MainController implements Initializable {
                         clickRight(entity);
                     }
                 });
-                buttons.add(button);
+                children.add(button);
             }
         }
     }
@@ -111,12 +121,8 @@ public class MainController implements Initializable {
             alert.show();
             return;
         }
-        String parent = entity.getParentPath();
         boolean isOpen = entity.isOpen();
-        String fileName = entity.getFileName();
-        String[] names = fileName.split(".properties");
-        String realName = names[0];
-        String serverName = realName.split("-")[1];
+        String serverName = entity.getServerName();
         try {
             String systemOS = System.getProperty("os.name");
             System.out.println("当前系统版本：：" + systemOS);
@@ -171,7 +177,7 @@ public class MainController implements Initializable {
                         }
                     }
                 } else {
-                    String[] cdRoom = new String[] {"cmd","/C","cd /d " + parent + " && java -jar -Dspring.profiles.active=" + serverName + " common-data-2.0.6.jar"};
+                    String[] cdRoom = new String[] {"cmd","/C","cd /d " + entity.getParentPath() + " && java -jar -Dspring.profiles.active=" + serverName + " common-data-2.0.6.jar"};
                     Process process = Runtime.getRuntime().exec(cdRoom);
                     // 获取子进程的输入流和错误流
                     InputStream inputStream = process.getInputStream();
@@ -216,7 +222,7 @@ public class MainController implements Initializable {
                 } else {
                     System.out.println("执行开启服务操作");
 //                    String[] cdRoom = new String[]{"/bin/sh","-C","xterm -e cd " + parent};
-                    String[] cdRoom = new String[]{"/bin/sh","-C","cd " + parent + " && ls -l"};
+                    String[] cdRoom = new String[]{"/bin/sh","-C","cd " + entity.getParentPath() + " && ls -l"};
                     Process process = Runtime.getRuntime().exec(cdRoom);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
                     String line;
@@ -252,4 +258,124 @@ public class MainController implements Initializable {
             throw new RuntimeException();
         }
     }
+
+    public void addClick(ActionEvent actionEvent) {
+        System.out.println("点击了\"新增\"菜单 == " + actionEvent);
+        Stage stage = new Stage();
+        VBox box = new VBox();
+        box.setStyle("-fx-padding: 10");
+        ObservableList<Node> children = box.getChildren();
+        GridPane textPane = new GridPane();
+        TextArea area = new TextArea();
+        String content = "这里需要默认模板内容";
+        area.setText(content);
+        textPane.add(area,1,1);
+        children.add(textPane);
+        GridPane buttonPane = new GridPane();
+        buttonPane.setStyle("-fx-alignment: center;-fx-hgap: 50;");
+        Button closeBtn = new Button("取消");
+        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
+        Button saveBtn = new Button("保存");
+        saveBtn.setOnMouseClicked(mouseEvent -> {
+            ObservableList<Node> child = flowPane.getChildren();
+            Button btn = new Button(RandomChinese.getSingleChinese(2));
+            btn.setStyle("-fx-background-color: green;");
+            child.add(btn);
+            stage.close();
+        });
+        buttonPane.add(closeBtn,1,1);
+        buttonPane.add(saveBtn,2,1);
+        children.add(buttonPane);
+        VBox.setVgrow(textPane,Priority.ALWAYS);
+        GridPane.setVgrow(area,Priority.ALWAYS);
+        GridPane.setHgrow(area,Priority.ALWAYS);
+        VBox.setVgrow(buttonPane,Priority.ALWAYS);
+        Scene scene = new Scene(box, 600, 400);
+        scene.getStylesheets().add("css/main.css");
+        // 设置Stage的样式为无边框
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        stage.setTitle("新增服务");
+        stage.getIcons().add(new Image("images/logo.png"));
+        stage.show();
+    }
+
+    public void exitClick(ActionEvent actionEvent) {
+        System.out.println("点击了\"退出\"菜单 == " + actionEvent);
+        Main.stage.close();
+    }
+
+    public void configClick(ActionEvent actionEvent) {
+        System.out.println("点击了\"系统配置\"菜单 == " + actionEvent);
+        Stage stage = new Stage();
+        VBox box = new VBox();
+        box.setStyle("-fx-padding: 10");
+        ObservableList<Node> children = box.getChildren();
+        GridPane textPane = new GridPane();
+        TextArea area = new TextArea();
+        textPane.add(area,1,1);
+        children.add(textPane);
+        GridPane buttonPane = new GridPane();
+        buttonPane.setStyle("-fx-alignment: center;-fx-hgap: 50;");
+        Button closeBtn = new Button("取消");
+        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
+        Button saveBtn = new Button("保存");
+        saveBtn.setOnMouseClicked(mouseEvent -> {
+            path = area.getText();
+            setFlowPane(flowPane);
+            stage.close();
+        });
+        buttonPane.add(closeBtn,1,1);
+        buttonPane.add(saveBtn,2,1);
+        children.add(buttonPane);
+        VBox.setVgrow(textPane,Priority.ALWAYS);
+        GridPane.setVgrow(area,Priority.ALWAYS);
+        GridPane.setHgrow(area,Priority.ALWAYS);
+        VBox.setVgrow(buttonPane,Priority.ALWAYS);
+        Scene scene = new Scene(box, 600, 200);
+        scene.getStylesheets().add("css/main.css");
+        // 设置Stage的样式为无边框
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        stage.setTitle("系统配置");
+        stage.getIcons().add(new Image("images/logo.png"));
+        stage.show();
+    }
+
+    public void aboutClick(ActionEvent actionEvent) {
+        System.out.println("点击了\"关于\"菜单 == " + actionEvent);
+        Stage stage = new Stage();
+        VBox box = new VBox();
+        box.setStyle("-fx-alignment: center");
+        ObservableList<Node> children = box.getChildren();
+        Label proLabel = new Label("当前程序版本：1.0.1");
+        proLabel.setStyle("-fx-text-fill: white;");
+        children.add(proLabel);
+        VBox.setVgrow(proLabel,Priority.ALWAYS);
+        Label javaLabel = new Label("当前JDK版本:" + System.getProperty("java.version"));
+        javaLabel.setStyle("-fx-text-fill: white;");
+        children.add(javaLabel);
+        VBox.setVgrow(javaLabel,Priority.ALWAYS);
+        Label javafxLabel = new Label("当前JavaFX版本:" + System.getProperty("javafx.version"));
+        javafxLabel.setStyle("-fx-text-fill: white;");
+        children.add(javafxLabel);
+        VBox.setVgrow(javafxLabel,Priority.ALWAYS);
+        Label sysLabel = new Label("当前系统版本:" + System.getProperty("os.name"));
+        sysLabel.setStyle("-fx-text-fill: white;");
+        children.add(sysLabel);
+        VBox.setVgrow(sysLabel,Priority.ALWAYS);
+        Label sysCodeLabel = new Label("当前系统内核版本:" + System.getProperty("os.version"));
+        sysCodeLabel.setStyle("-fx-text-fill: white;");
+        children.add(sysCodeLabel);
+        VBox.setVgrow(sysCodeLabel,Priority.ALWAYS);
+        Scene scene = new Scene(box, 300, 150);
+        scene.getStylesheets().add("css/main.css");
+        // 禁用最小化和最大化按钮
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.setTitle("系统信息");
+        stage.getIcons().add(new Image("images/logo.png"));
+        stage.show();
+    }
+
 }

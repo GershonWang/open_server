@@ -41,18 +41,18 @@ public class FileUtil {
         }
         for (File f : files) {
             String name = f.getName();
-            if (name.endsWith(".properties") && !name.equals("bootstrap.properties") && !name.equals("application.properties")) {
+            if (name.endsWith(".properties") && name.startsWith("application-") && !name.equals("bootstrap.properties") && !name.equals("application.properties")) {
                 Map<String, FileEntity> map = new HashMap<>();
-                String[] names = name.split(".properties");
-                String realName = names[0];
-                String serverName = realName.split("-")[1];
                 FileEntity fileEntity = new FileEntity();
                 fileEntity.setFileName(name);
-                fileEntity.setOpen(false);
                 fileEntity.setPath(f.getPath());
                 fileEntity.setParentPath(f.getParent());
-                String value = PropertiesUtil.getType(f.getPath(), "server.port");
-                fileEntity.setPort(value);
+                String realName = name.split(".properties")[0];
+                String serverName = realName.split("-")[1];
+                fileEntity.setServerName(serverName);
+                fileEntity.setOpen(false);
+                String port = PropertiesUtil.getType(f.getPath(), "server.port");
+                fileEntity.setPort(port);
                 map.put(serverName,fileEntity);
                 list.add(map);
             }

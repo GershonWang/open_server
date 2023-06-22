@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<FlowPane fx:id="pane" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.dongpl.controller.MainController"
-            prefHeight="600.0" prefWidth="800.0">
+<VBox fx:id="box" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dongpl.controller.MainController">
     <MenuBar fx:id="menuBar">
-        <Menu fx:id="fileMenu" text="文件">
-            <MenuItem text="新增"/>
+        <Menu text="文件">
+            <MenuItem text="新增" onAction="#addClick"/>
+            <MenuItem text="退出" onAction="#exitClick"/>
         </Menu>
-        <Menu fx:id="confMenu" text="配置">
-            <MenuItem text="系统配置"/>
+        <Menu text="配置">
+            <MenuItem text="系统配置" onAction="#configClick"/>
         </Menu>
-        <Menu fx:id="aboutMenu" text="关于"/>
+        <Menu text="帮助">
+            <MenuItem text="关于" onAction="#aboutClick"/>
+        </Menu>
     </MenuBar>
-    <ButtonBar fx:id="buttonBar" prefHeight="150.0" style="-fx-background-color: #2c2a38;">
-        <!--<buttons>
-            <Button text="新增" ButtonBar.buttonData="LEFT"/>
-        </buttons>-->
-    </ButtonBar>
-    <TextArea fx:id="textArea" prefHeight="400.0"/>
-</FlowPane>
+    <FlowPane fx:id="flowPane" prefHeight="150.0" />
+    <GridPane fx:id="textPane">
+        <TextArea fx:id="textArea"/>
+    </GridPane>
+</VBox>
