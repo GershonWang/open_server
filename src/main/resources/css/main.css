@@ -1,7 +1,7 @@
 .root {
     -fx-background-color: #3f3f3f;  /* 背景颜色*/
     /*-fx-padding: 10;  // 内边距*/
-    -fx-vgap: 10;    /* 垂直边距*/
+    /*-fx-vgap: 10;    !* 垂直边距*!*/
     -fx-hgap: 10;    /* 水平边距*/
     -fx-orientation: horizontal; /* 排列方向*/
 }
