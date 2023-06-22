@@ -47,7 +47,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.dongpl.Main</mainClass>
+                            <mainClass>com.dongpl.MainApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

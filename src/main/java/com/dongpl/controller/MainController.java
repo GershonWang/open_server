@@ -1,6 +1,6 @@
 package com.dongpl.controller;
 
-import com.dongpl.Main;
+import com.dongpl.MainApp;
 import com.dongpl.entity.FileEntity;
 import com.dongpl.utils.FileUtil;
 import com.dongpl.utils.RandomChinese;
@@ -302,7 +302,7 @@ public class MainController implements Initializable {
 
     public void exitClick(ActionEvent actionEvent) {
         System.out.println("点击了\"退出\"菜单 == " + actionEvent);
-        Main.stage.close();
+        MainApp.stage.close();
     }
 
     public void configClick(ActionEvent actionEvent) {
