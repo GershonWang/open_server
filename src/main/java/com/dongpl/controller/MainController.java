@@ -20,6 +20,7 @@ import javafx.stage.StageStyle;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -215,7 +216,6 @@ public class MainController implements Initializable {
             } else if (systemOS.toLowerCase().contains("linux")){
                 System.out.println("当前执行linux系统的操作");
                 if (isOpen) {
-                    System.out.println("执行关闭服务操作");
                     Process process = Runtime.getRuntime().exec("lsof -i :" + port);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     String line;
@@ -236,14 +236,21 @@ public class MainController implements Initializable {
                     button.setStyle("-fx-background-color: green;");
                     entity.setOpen(false);
                 } else {
-                    System.out.println("执行开启服务操作");
-//                    String[] cdRoom = new String[]{"/bin/sh","-C","xterm -e cd " + parent};
-                    String[] cdRoom = new String[]{"/bin/sh","-C","cd " + entity.getParentPath() + " && ls -l"};
+                    String[] cdRoom = new String[]{"/bin/sh","-c","cd " + entity.getParentPath() + " && java -jar -Dspring.profiles.active=" + serverName + " common-data-2.0.6.jar"};
                     Process process = Runtime.getRuntime().exec(cdRoom);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+                    StringBuilder sb = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        sb.append(line).append("\n");
+                        textArea.setText(sb.toString());
+                    }
+                    BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
+                    StringBuilder errSB = new StringBuilder();
+                    String errLine;
+                    while ((errLine = errReader.readLine()) != null) {
+                        errSB.append(errLine).append("\n");
+                        textArea.setText(errSB.toString());
                     }
                     button.setStyle("-fx-background-color: red;");
                     entity.setOpen(true);
