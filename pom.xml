@@ -52,6 +52,53 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.25</version>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+                            <outfile>${project.build.directory}/${project.build.finalName}.exe</outfile>
+                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <classPath>
+                                <mainClass>com.example.MainClass</mainClass>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <path>../jre</path>
+                                <bundledJre64Bit>false</bundledJre64Bit>
+                                <minVersion>1.7.0</minVersion>
+                                <maxVersion>1.8.0</maxVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                                <runtimeBits>32/64</runtimeBits>
+                                <options>
+                                    <option>-Djava.net.preferIPv4Stack=true</option>
+                                </options>
+                                <versionFile>version.txt</versionFile>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0</txtFileVersion>
+                                <fileDescription>My Application</fileDescription>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0</txtProductVersion>
+                                <productName>My Application</productName>
+                                <companyName>My Company</companyName>
+                                <internalName>My Application</internalName>
+                                <originalFilename>MyApplication.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
