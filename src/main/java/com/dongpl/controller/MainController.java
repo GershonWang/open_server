@@ -336,8 +336,7 @@ public class MainController implements Initializable {
         stage.show();
     }
 
-    public void exitClick(ActionEvent actionEvent) {
-        System.out.println("点击了\"退出\"菜单 == " + actionEvent);
+    public void exitClick() {
         MainApp.stage.close();
     }
 
