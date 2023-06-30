@@ -1,10 +1,10 @@
 package com.dongpl.controller;
 
-import com.dongpl.MainApp;
 import com.dongpl.entity.FileEntity;
 import com.dongpl.utils.FileUtil;
 import com.dongpl.utils.RandomChinese;
 import com.dongpl.utils.UnicodeBackslashU;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -337,7 +337,7 @@ public class MainController implements Initializable {
     }
 
     public void exitClick() {
-        MainApp.stage.close();
+        Platform.exit();
     }
 
     public void configClick(ActionEvent actionEvent) {

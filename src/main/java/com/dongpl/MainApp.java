@@ -11,15 +11,12 @@ import java.util.Objects;
 
 public class MainApp extends Application {
 
-    public static Stage stage = new Stage();
-
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/Main.fxml")));
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add("css/main.css");

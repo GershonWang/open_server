@@ -47,7 +47,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.dongpl.MainApp</mainClass>
+                            <mainClass>com.dongpl.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -69,7 +69,7 @@
                             <outfile>${project.build.directory}/${project.build.finalName}.exe</outfile>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>
-                                <mainClass>com.example.MainClass</mainClass>
+                                <mainClass>com.dongpl.Main</mainClass>
                                 <preCp>anything</preCp>
                             </classPath>
                             <jre>
