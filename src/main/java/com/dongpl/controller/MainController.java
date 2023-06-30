@@ -1,6 +1,7 @@
 package com.dongpl.controller;
 
 import com.dongpl.entity.FileEntity;
+import com.dongpl.utils.AlertUtil;
 import com.dongpl.utils.FileUtil;
 import com.dongpl.utils.RandomChinese;
 import com.dongpl.utils.UnicodeBackslashU;
@@ -34,19 +35,22 @@ public class MainController implements Initializable {
     @FXML
     public MenuBar menuBar;
     @FXML
-    public FlowPane flowPane;
+    public FlowPane serviceButtonsPane;
     @FXML
     public GridPane textPane;
 
     public TextArea textArea;
 
+    public Menu changeServiceMenu;
+    public Menu deleteServiceMenu;
+    public Menu viewServiceLogMenu;
     public static String path = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "data";
 
     @Override
     public void initialize(URL location, ResourceBundle resource) {
         menuBar.prefWidthProperty().bind(box.widthProperty()); //菜单栏宽度绑定为box宽度
-        flowPane.prefWidthProperty().bind(box.widthProperty()); //flowPane宽度绑定为box宽度
-        setFlowPane(flowPane);
+        serviceButtonsPane.prefWidthProperty().bind(box.widthProperty()); //flowPane宽度绑定为box宽度
+        setFlowPane(serviceButtonsPane);
         VBox.setVgrow(textPane, Priority.ALWAYS); // 文本域布局部分自适应程序宽高
         GridPane.setVgrow(textArea, Priority.ALWAYS);
         GridPane.setHgrow(textArea,Priority.ALWAYS);
@@ -313,7 +317,7 @@ public class MainController implements Initializable {
         closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
         Button saveBtn = new Button("保存");
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            ObservableList<Node> child = flowPane.getChildren();
+            ObservableList<Node> child = serviceButtonsPane.getChildren();
             Button btn = new Button(RandomChinese.getSingleChinese(2));
             btn.setStyle("-fx-background-color: green;");
             child.add(btn);
@@ -357,7 +361,7 @@ public class MainController implements Initializable {
         Button saveBtn = new Button("保存");
         saveBtn.setOnMouseClicked(mouseEvent -> {
             path = area.getText();
-            setFlowPane(flowPane);
+            setFlowPane(serviceButtonsPane);
             stage.close();
         });
         buttonPane.add(closeBtn,1,1);
@@ -377,40 +381,8 @@ public class MainController implements Initializable {
         stage.show();
     }
 
-    public void aboutClick(ActionEvent actionEvent) {
-        System.out.println("点击了\"关于\"菜单 == " + actionEvent);
-        Stage stage = new Stage();
-        VBox box = new VBox();
-        box.setStyle("-fx-alignment: center");
-        ObservableList<Node> children = box.getChildren();
-        Label proLabel = new Label("当前程序版本：1.0.1");
-        proLabel.setStyle("-fx-text-fill: white;");
-        children.add(proLabel);
-        VBox.setVgrow(proLabel,Priority.ALWAYS);
-        Label javaLabel = new Label("当前JDK版本:" + System.getProperty("java.version"));
-        javaLabel.setStyle("-fx-text-fill: white;");
-        children.add(javaLabel);
-        VBox.setVgrow(javaLabel,Priority.ALWAYS);
-        Label javafxLabel = new Label("当前JavaFX版本:" + System.getProperty("javafx.version"));
-        javafxLabel.setStyle("-fx-text-fill: white;");
-        children.add(javafxLabel);
-        VBox.setVgrow(javafxLabel,Priority.ALWAYS);
-        Label sysLabel = new Label("当前系统版本:" + System.getProperty("os.name"));
-        sysLabel.setStyle("-fx-text-fill: white;");
-        children.add(sysLabel);
-        VBox.setVgrow(sysLabel,Priority.ALWAYS);
-        Label sysCodeLabel = new Label("当前系统内核版本:" + System.getProperty("os.version"));
-        sysCodeLabel.setStyle("-fx-text-fill: white;");
-        children.add(sysCodeLabel);
-        VBox.setVgrow(sysCodeLabel,Priority.ALWAYS);
-        Scene scene = new Scene(box, 300, 150);
-        scene.getStylesheets().add("css/main.css");
-        // 禁用最小化和最大化按钮
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.setTitle("系统信息");
-        stage.getIcons().add(new Image("images/logo.png"));
-        stage.show();
+    public void aboutClick() {
+        AlertUtil.aboutAlert();
     }
 
 }

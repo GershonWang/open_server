@@ -1,5 +1,6 @@
 package com.dongpl.utils;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UnicodeBackslashU {
@@ -44,5 +45,20 @@ public class UnicodeBackslashU {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 将中文和部分符号转成unicode编码
+     */
+    public static String cnToUnicode(final String str) {
+        String regex = "[\u4e00-\u9fa5\\pP&&[^#:./=-]]"; // 除之外的标点符号进行转义
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(result,String.format("\\\\u%04x",(int) matcher.group().charAt(0)));
+        }
+        matcher.appendTail(result);
+        return result.toString();
     }
 }

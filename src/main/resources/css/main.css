@@ -48,27 +48,6 @@
     -fx-opacity: 0.5;
 }
 
-/*#flowPane {*/
-/*    !*-fx-background-color: #2c2a38;*!*/
-/*    -fx-background-color: darkslategray;*/
-/*    -fx-padding: 10;*/
-/*    -fx-vgap: 10;*/
-/*    -fx-hgap: 10;*/
-/*}*/
-
-/*#textPane {*/
-/*    -fx-background-color: greenyellow;*/
-/*    -fx-padding: 10 10 10 10;*/
-/*}*/
-
-/*#textPane #textArea {*/
-/*    -fx-background-color: #2c2a38;*/
-/*    !*-fx-text-fill: #ffffff*!*/
-/*    -fx-text-fill: black;*/
-/*    -fx-font-weight: bold;*/
-/*    -fx-font-size: 12px;*/
-/*}*/
-
 .text-area {
     -fx-control-inner-backgorund: #2c2a38;
     -fx-text-fill: #fbedde;
