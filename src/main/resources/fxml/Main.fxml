@@ -21,6 +21,6 @@
     </MenuBar>
     <FlowPane fx:id="serviceButtonsPane" prefHeight="100.0" style="-fx-background-color: darkslategray;-fx-padding: 10;-fx-hgap: 10;-fx-vgap: 10;"/>
     <GridPane fx:id="textPane" style="-fx-background-color: darkslategray;-fx-padding: 10 10 10 10;">
-        <TextArea fx:id="textArea" editable="false"/>
+        <TextArea styleClass="text-area" fx:id="textArea" editable="false"/>
     </GridPane>
 </VBox>

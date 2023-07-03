@@ -123,7 +123,7 @@ public class FileUtil {
         }
     }
 
-    private static void copyFile(String source,String target) throws IOException {
+    public static void copyFile(String source,String target) throws IOException {
         InputStream inputStream = FileUtil.class.getClassLoader().getResourceAsStream(source);
         FileOutputStream outputStream = new FileOutputStream(target);
         byte[] buffer = new byte[1024];

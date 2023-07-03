@@ -20,7 +20,7 @@ public class AlertUtil {
         ObservableList<Node> children = vBox.getChildren();
         Label proLabel = new Label();
         proLabel.setStyle("-fx-text-fill: #fbedde;-fx-opacity: 0.7;");
-        proLabel.setText("当前程序版本：1.0.1\n" +
+        proLabel.setText("当前程序版本：1.1.1\n" +
                 "当前JDK版本:" + System.getProperty("java.version") + "\n" +
                 "当前JavaFX版本:" + System.getProperty("javafx.version") + "\n" +
                 "当前系统版本:" + System.getProperty("os.name") + "\n" +
@@ -28,14 +28,14 @@ public class AlertUtil {
                 "软件开发者：WangShengshan");
         children.add(proLabel);
         VBox.setVgrow(proLabel, Priority.ALWAYS);
-        Scene scene = new Scene(vBox, 300, 100);
+        Scene scene = new Scene(vBox, 300, 150);
         scene.getStylesheets().add("css/main.css");
         // 禁用最大化按钮
         stage.setResizable(false);
         stage.setScene(scene);
         stage.setTitle("系统信息");
         stage.getIcons().add(new Image("images/logo.png"));
-        stage.show();
+        stage.showAndWait();
     }
 
     public static void errAlert(String content) {
@@ -55,7 +55,7 @@ public class AlertUtil {
         stage.setScene(scene);
         stage.setTitle("错误");
         stage.getIcons().add(new Image("images/logo.png"));
-        stage.show();
+        stage.showAndWait();
     }
 
     public static void infoAlert(String content) {
@@ -75,6 +75,6 @@ public class AlertUtil {
         stage.setScene(scene);
         stage.setTitle("提示");
         stage.getIcons().add(new Image("images/logo.png"));
-        stage.show();
+        stage.showAndWait();
     }
 }

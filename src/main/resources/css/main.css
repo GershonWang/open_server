@@ -50,7 +50,7 @@
 
 .text-area {
     -fx-control-inner-backgorund: #2c2a38;
-    -fx-text-fill: #fbedde;
+    -fx-text-fill: darkslategray;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
     -fx-opacity: 0.7;
